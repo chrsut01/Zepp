@@ -11,11 +11,9 @@ public class MainMenuScreen implements Screen {
     final Plane game;
 
     OrthographicCamera camera;
-    // In another class
     int screenWidth = GameConfig.SCREEN_WIDTH;
     int screenHeight = GameConfig.SCREEN_HEIGHT;
-   /* int screenWidth = 800;
-    int screenHeight = 480;*/
+
     public MainMenuScreen(final Plane game) {
         this.game = game;
 
@@ -36,9 +34,12 @@ public class MainMenuScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();
+
         game.font.draw(game.batch, "Welcome to Arika-Schiff!!! ", screenWidth / 2 -200, screenHeight / 2 + 25);
         game.font.draw(game.batch, "Hit the spacebar to begin!", screenWidth / 2 - 200, screenHeight / 2 - 50);
+
         // Set the font size
+        game.font.getData().setScale(2f);
         game.batch.end();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {

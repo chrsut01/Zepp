@@ -37,15 +37,18 @@ public class GameScreen implements Screen {
     Rectangle zeppelin;
     Array<Rectangle> planes;
     long lastPlaneTime;
-    private float backgroundVelocity = 2;
+    private float backgroundVelocity = 0.5f;
     private float backgroundX = 0;
     private float backgroundY = 0;
     int screenWidth = GameConfig.SCREEN_WIDTH;
     int screenHeight = GameConfig.SCREEN_HEIGHT;
    // int screenWidth = 800;
     //int screenHeight = 480;
-    private static final float width = 1567;
-    private static final float height = 218;
+    private static final float zeppelinImageWidth = 1567;
+    private static final float zeppelinImageHeight = 218;
+    private static final float width = zeppelinImageWidth / 3;
+    private static final float height = zeppelinImageHeight / 3;
+
     public GameScreen(final Plane game) {
         this.game = game;
 
@@ -68,11 +71,11 @@ public class GameScreen implements Screen {
 
         // create a Rectangle to logically represent the zeppelin
         zeppelin = new Rectangle();
-        zeppelin.width = width / 4;
-        zeppelin.height = height / 4;
+        zeppelin.width = width;
+        zeppelin.height = height;
         // the bottom screen edge
-        zeppelin.x = screenWidth / 2 - zeppelin.width / 2; // center the zeppelin horizontally
-        zeppelin.y = screenHeight / 2 - zeppelin.height / 2; // center the zeppelin vertically
+        zeppelin.x = screenWidth / 2 - width / 1.5f; // center the zeppelin horizontally
+        zeppelin.y = screenHeight / 2 - height / 2; // center the zeppelin vertically
 
         planes = new Array<>();
         spawnPlane();
@@ -123,23 +126,17 @@ public class GameScreen implements Screen {
         game.batch.draw(scrollSkyImage1,  backgroundX, backgroundY, 16384, 1856);
         game.batch.draw(scrollSkyImage2,  backgroundX + 16384, backgroundY, 16384, 1856);
 
-
+        // Set the font size
+        game.font.getData().setScale(2f);
         // draw the Drops Collected score
         game.font.draw(game.batch, "Planes hit: " + planesHit, 5, 475);
         // shows backgroundX
         game.font.draw(game.batch, "backgroundX: " + backgroundX, 5, 450);
 
-        //zeppelin.render(batch);
-        // draw the zeppelin and all drops
-      /*  game.batch.draw(zeppelin.getZeppelinImage(), zeppelin.x, zeppelin.y, zeppelin.getWidth(), zeppelin.getHeight());
-        for (Plane plane : planes) {
-            game.batch.draw(planeImage, plane.x, plane.y);
-        }*/
-
         // draw the bucket and all drops
         game.batch.draw(zeppelinImage, zeppelin.x, zeppelin.y, zeppelin.width, zeppelin.height);
         for (Rectangle plane : planes) {
-            game.batch.draw(planeImage, plane.x, plane.y);
+            game.batch.draw(planeImage, plane.x, plane.y, plane.width, plane.height);
         }
 
 
@@ -157,10 +154,12 @@ public class GameScreen implements Screen {
         if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-             camera.unproject(touchPos); // If needed
+            camera.unproject(touchPos); // If needed
             zeppelin.x = touchPos.x - width / 2;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
+    /*
+     //  moves zeppelin up and down - probably not needed for our game
+     if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
             zeppelin.x -= 30 * Gdx.graphics.getDeltaTime();
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
             zeppelin.x += 30 * Gdx.graphics.getDeltaTime();
@@ -169,7 +168,7 @@ public class GameScreen implements Screen {
         if (zeppelin.x < 0)
             zeppelin.x = 0;
         if (zeppelin.x > screenWidth - width)
-            zeppelin.x = screenWidth - width;
+            zeppelin.x = screenWidth - width;*/
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP))
             zeppelin.y += 30 * Gdx.graphics.getDeltaTime();
@@ -182,9 +181,6 @@ public class GameScreen implements Screen {
         if (zeppelin.y > screenHeight - height)
             zeppelin.y = screenHeight - height;
 
-        // check if we need to create a new raindrop
-       /* if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
-            spawnRaindrop();*/
         if (TimeUtils.timeSinceMillis(lastPlaneTime) > 4000)
             spawnPlane();
 
@@ -196,7 +192,7 @@ public class GameScreen implements Screen {
             Rectangle plane = iter.next();
             plane.x -= 200 * Gdx.graphics.getDeltaTime();
             plane.y -= 30 * Gdx.graphics.getDeltaTime();
-            if (plane.y + 64 < 0)
+            if (plane.y + 44 < 0)
                 iter.remove();
             if (plane.overlaps(zeppelin)) {
                 planesHit++;
@@ -211,8 +207,6 @@ public class GameScreen implements Screen {
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
-            System.out.println("zeppelin.x: " + zeppelin.x);
-            System.out.println("zeppelin.y: " + zeppelin.y);
             Gdx.app.exit();
     }
 
