@@ -35,6 +35,7 @@ public class GameScreen implements Screen {
 
     OrthographicCamera camera;
     Rectangle zeppelin;
+    Rectangle zeppelinHitBox;
     Array<Rectangle> planes;
     long lastPlaneTime;
     private float backgroundVelocity = 0.5f;
@@ -44,10 +45,12 @@ public class GameScreen implements Screen {
     int screenHeight = GameConfig.SCREEN_HEIGHT;
    // int screenWidth = 800;
     //int screenHeight = 480;
+    int paddingX = 5;
+    int paddingY = 5;
     private static final float zeppelinImageWidth = 1567;
     private static final float zeppelinImageHeight = 218;
-    private static final float width = zeppelinImageWidth / 3;
-    private static final float height = zeppelinImageHeight / 3;
+    private static final float width = zeppelinImageWidth / 2.75f;
+    private static final float height = zeppelinImageHeight / 2.75f;
 
     public GameScreen(final Plane game) {
         this.game = game;
@@ -69,6 +72,8 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, screenWidth, screenHeight);
 
+
+
         // create a Rectangle to logically represent the zeppelin
         zeppelin = new Rectangle();
         zeppelin.width = width;
@@ -76,6 +81,8 @@ public class GameScreen implements Screen {
         // the bottom screen edge
         zeppelin.x = screenWidth / 2 - width / 1.5f; // center the zeppelin horizontally
         zeppelin.y = screenHeight / 2 - height / 2; // center the zeppelin vertically
+
+        zeppelinHitBox = new Rectangle(zeppelin.x + paddingX, zeppelin.y + paddingY, zeppelin.width - 2 * paddingX, zeppelin.height - 2 * paddingY);
 
         planes = new Array<>();
         spawnPlane();
@@ -139,8 +146,6 @@ public class GameScreen implements Screen {
             game.batch.draw(planeImage, plane.x, plane.y, plane.width, plane.height);
         }
 
-
-
         game.batch.end();
 
         backgroundX -= backgroundVelocity;
@@ -156,6 +161,7 @@ public class GameScreen implements Screen {
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos); // If needed
             zeppelin.x = touchPos.x - width / 2;
+            zeppelinHitBox.setX(zeppelin.x - paddingX);
         }
     /*
      //  moves zeppelin up and down - probably not needed for our game
@@ -180,6 +186,7 @@ public class GameScreen implements Screen {
             zeppelin.y = 0;
         if (zeppelin.y > screenHeight - height)
             zeppelin.y = screenHeight - height;
+            zeppelinHitBox.setY(zeppelin.y - paddingY);
 
         if (TimeUtils.timeSinceMillis(lastPlaneTime) > 4000)
             spawnPlane();
@@ -194,7 +201,7 @@ public class GameScreen implements Screen {
             plane.y -= 30 * Gdx.graphics.getDeltaTime();
             if (plane.y + 44 < 0)
                 iter.remove();
-            if (plane.overlaps(zeppelin)) {
+            if (plane.overlaps(zeppelinHitBox)) {
                 planesHit++;
                 planeCrashSound.play();
                 Timer.schedule(new Timer.Task() {
