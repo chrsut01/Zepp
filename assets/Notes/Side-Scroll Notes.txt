@@ -1,0 +1,146 @@
+// Side-scrolling code for background image that is much larger than screen aspect ratio.
+
+public class MyGame implements ApplicationListener {
+    private OrthographicCamera camera;
+    private SpriteBatch batch;
+    private Texture backgroundImage;
+    private float backgroundX;
+    private float backgroundY;
+
+    @Override
+    public void create() {
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 800, 480);
+
+        batch = new SpriteBatch();
+        backgroundImage = new Texture("path/to/your/backgroundImage.png");
+
+        backgroundX = 0;
+        backgroundY = 0;
+    }
+
+    @Override
+    public void render() {
+        // Clear the screen
+        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        // Update the camera
+        camera.update();
+
+        // Set the batch to use the camera's coordinates
+        batch.setProjectionMatrix(camera.combined);
+
+        // Begin the batch
+        batch.begin();
+
+        // Draw the background at the current position
+        batch.draw(backgroundImage, backgroundX, backgroundY, 6400, 1440);
+
+        // End the batch
+        batch.end();
+
+        // Handle input for movement (adjust values as needed)
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            backgroundX += 5; // Move background to the right
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            backgroundX -= 5; // Move background to the left
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            backgroundY -= 5; // Move background down
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            backgroundY += 5; // Move background up
+        }
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        // Adjust the viewport to the new screen size
+        camera.setToOrtho(false, 800, 480);
+    }
+
+    @Override
+    public void dispose() {
+        batch.dispose();
+        backgroundImage.dispose();
+    }
+
+    // Other methods...
+}
+
+
+
+
+
+
+
+
+
+// Side-scrolling code from youtube video.
+
+package com.scrollscreen.game;
+
+import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import javax.xml.soap.Text;
+
+public class SrollScreen extends ApplicationAdapter {
+
+	SpriteBatch batch;
+	Texture background1;
+	Texture background2;
+
+	private float backgroundVelocity = 4;
+	private float backgroundX = 0;
+	private float screenHeight;
+	private float screenWidth;
+
+	@Override
+	public void create () {
+
+		batch = new SpriteBatch();
+		screenHeight = Gdx.graphics.getHeight();
+		screenWidth = Gdx.graphics.getWidth();
+
+		background1 = new Texture("bg.png");
+		background2 = new Texture("bg.png");
+	}
+
+	@Override
+	public void render () {
+		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		batch.begin();
+		batch.draw(background1 , backgroundX , 0 , screenWidth , screenHeight);
+		batch.draw(background2 , backgroundX + screenWidth, 0 , screenWidth , screenHeight);
+		batch.end();
+
+		backgroundX -= backgroundVelocity;
+
+		if (backgroundX +screenWidth ==0){
+			backgroundX = 0;
+		}
+
+	}
+
+	@Override
+	public void dispose () {
+
+		background1.dispose();
+		background2.dispose();
+	}
+}
+
+
+
+// Swap background images
+       /* Texture temp = backgroundImage4;
+        backgroundImage4 = backgroundImage5;
+        backgroundImage5 = temp;*/
