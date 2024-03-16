@@ -97,8 +97,17 @@ public class GameScreen implements Screen {
         plane.height = 44;
         planes.add(plane);
         planeFlyingSound.play();
+
+        // Randomize the delay before the next plane spawn
+        float randomSpawnDelay = MathUtils.random(0.5f, 4f); // Adjust the range as needed
+        lastPlaneTime = TimeUtils.millis() + (long) (randomSpawnDelay * 1000); // Convert to milliseconds
+        //lastPlaneTime = TimeUtils.millis() + 4000;
        // lastPlaneTime = TimeUtils.nanoTime();
-        lastPlaneTime = TimeUtils.millis() + 4000;
+
+        // Occasionally create a cluster (e.g., 10% chance)
+        if (MathUtils.randomBoolean(0.1f)) {
+            spawnCluster();
+        }
 
 
      /*   float x = screenWidth;
@@ -111,6 +120,13 @@ public class GameScreen implements Screen {
         lastPlaneTime = TimeUtils.millis() + 4000; // sets the delay time to 4 seconds*/
 
     }
+    private void spawnCluster() {
+        // Create additional planes within a short time frame
+        for (int i = 0; i < 3; i++) {
+            spawnPlane();
+        }
+    }
+
 
     @Override
     public void render(float delta) {
@@ -138,7 +154,7 @@ public class GameScreen implements Screen {
         // draw the Drops Collected score
         game.font.draw(game.batch, "Planes hit: " + planesHit, 5, 475);
         // shows backgroundX
-        game.font.draw(game.batch, "backgroundX: " + backgroundX, 5, 450);
+       // game.font.draw(game.batch, "backgroundX: " + backgroundX, 5, 450);
 
         // draw the bucket and all drops
         game.batch.draw(zeppelinImage, zeppelin.x, zeppelin.y, zeppelin.width, zeppelin.height);
@@ -152,8 +168,6 @@ public class GameScreen implements Screen {
         if (backgroundX <= -32768.0 + screenWidth){ //this number comes from 2 X 16384(image width) - screenWidth (screen width)
             backgroundX = 0;
         }
-
-
 
         // Handle user input for zeppelin movement
         if (Gdx.input.isTouched()) {
@@ -191,14 +205,29 @@ public class GameScreen implements Screen {
         if (TimeUtils.timeSinceMillis(lastPlaneTime) > 4000)
             spawnPlane();
 
-        // move the raindrops, remove any that are beneath the bottom edge of
-        // the screen or that hit the bucket. In the later case we increase the
-        // value our drops counter and add a sound effect.
+        // Generate a random y-axis angle for each plane
+        int[] yAngles = new int[planes.size];
+        for (int i = 0; i < planes.size; i++) {
+            yAngles[i] = random.nextInt(120) - 60; // Random angle between -60 and 60 degrees
+        }
         Iterator<Rectangle> iter = planes.iterator();
+        int index = 0;
         while (iter.hasNext()) {
             Rectangle plane = iter.next();
+            // Get the random y-axis angle for this plane
+            int yAngle = yAngles[index];
+
+            // Calculate the random y-axis angle
+            //int yAngle = random.nextInt(120) - 60;// Random angle between -60 and 60 degrees
+
+            // Calculate the y-axis movement based on the angle
+            //float yMovement = 30 * MathUtils.sinDeg(yAngle) * Gdx.graphics.getDeltaTime();
+            float yMovement = 30 * MathUtils.sinDeg(yAngle);
+
             plane.x -= 200 * Gdx.graphics.getDeltaTime();
-            plane.y -= 30 * Gdx.graphics.getDeltaTime();
+            //plane.y -= yAngle * Gdx.graphics.getDeltaTime();
+            plane.y -= yMovement * Gdx.graphics.getDeltaTime();
+
             if (plane.y + 44 < 0)
                 iter.remove();
             if (plane.overlaps(zeppelinHitBox)) {
@@ -212,6 +241,7 @@ public class GameScreen implements Screen {
                 }, 0.25F); // 1 second delay
                 iter.remove();
             }
+            index++;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
             Gdx.app.exit();
