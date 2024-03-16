@@ -28,6 +28,7 @@ public class GameScreen implements Screen {
 
     Texture scrollSkyImage1;
     Texture scrollSkyImage2;
+    Texture mountainImage;
     int planesHit;
     Sound planeFlyingSound;
     Sound planeCrashSound;
@@ -36,9 +37,11 @@ public class GameScreen implements Screen {
     OrthographicCamera camera;
     Rectangle zeppelin;
     Rectangle zeppelinHitBox;
+    Rectangle mountain;
     Array<Rectangle> planes;
     long lastPlaneTime;
     private float backgroundVelocity = 0.5f;
+    private float mountainVelocity = 1f;
     private float backgroundX = 0;
     private float backgroundY = 0;
     int screenWidth = GameConfig.SCREEN_WIDTH;
@@ -65,6 +68,8 @@ public class GameScreen implements Screen {
         scrollSkyImage1 = new Texture(Gdx.files.internal("scroll-Sky1.jpg"));
         scrollSkyImage2 = new Texture(Gdx.files.internal("scroll-Sky1.jpg"));
 
+        mountainImage = new Texture(Gdx.files.internal("mountain-transparency.png"));
+
         planeFlyingSound = Gdx.audio.newSound(Gdx.files.internal("plane_flying.mp3"));
         planeCrashSound = Gdx.audio.newSound(Gdx.files.internal("plane_crash.mp3"));
 
@@ -86,7 +91,17 @@ public class GameScreen implements Screen {
 
         planes = new Array<>();
         spawnPlane();
+        spawnMountain();
 
+    }
+
+    private void spawnMountain() {
+        mountain = new Rectangle();
+        mountain.y = 0;
+        mountain.x = screenWidth;
+        mountain.width = 1050;
+        mountain.height = 443;
+       // planes.add(mountain);
     }
 
     private void spawnPlane() {
@@ -146,8 +161,11 @@ public class GameScreen implements Screen {
         // begin a new batch...
         game.batch.begin();
 
+
         game.batch.draw(scrollSkyImage1,  backgroundX, backgroundY, 16384, 1856);
         game.batch.draw(scrollSkyImage2,  backgroundX + 16384, backgroundY, 16384, 1856);
+
+        game.batch.draw(mountainImage,  mountain.x, mountain.y, mountain.width, mountain.height);
 
         // Set the font size
         game.font.getData().setScale(2f);
@@ -161,6 +179,16 @@ public class GameScreen implements Screen {
         for (Rectangle plane : planes) {
             game.batch.draw(planeImage, plane.x, plane.y, plane.width, plane.height);
         }
+
+
+        // Move the mountain across the screen
+        mountain.x -= (backgroundVelocity * 2); // Move the mountain faster than the sky
+
+        // Check if the mountain has moved off the screen
+     /*   if (mountain.x + mountain.width < 0) {
+            // Respawn the mountain at the right edge of the screen
+            mountain.x = screenWidth;
+        }*/
 
         game.batch.end();
 
@@ -224,7 +252,7 @@ public class GameScreen implements Screen {
             //float yMovement = 30 * MathUtils.sinDeg(yAngle) * Gdx.graphics.getDeltaTime();
             float yMovement = 30 * MathUtils.sinDeg(yAngle);
 
-            plane.x -= 200 * Gdx.graphics.getDeltaTime();
+            plane.x -= 250 * Gdx.graphics.getDeltaTime();
             //plane.y -= yAngle * Gdx.graphics.getDeltaTime();
             plane.y -= yMovement * Gdx.graphics.getDeltaTime();
 
@@ -279,6 +307,7 @@ public class GameScreen implements Screen {
         planeCrashSound.dispose();
         scrollSkyImage1.dispose();
         scrollSkyImage2.dispose();
+        mountainImage.dispose();
     }
 
 }
