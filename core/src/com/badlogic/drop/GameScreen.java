@@ -48,8 +48,8 @@ public class GameScreen implements Screen {
     int screenHeight = GameConfig.SCREEN_HEIGHT;
    // int screenWidth = 800;
     //int screenHeight = 480;
-    int paddingX = 5;
-    int paddingY = 5;
+    int paddingX = 10;
+    int paddingY = 15;
     private static final float zeppelinImageWidth = 1567;
     private static final float zeppelinImageHeight = 218;
     private static final float width = zeppelinImageWidth / 2.75f;
@@ -87,7 +87,7 @@ public class GameScreen implements Screen {
         zeppelin.x = screenWidth / 2 - width / 1.5f; // center the zeppelin horizontally
         zeppelin.y = screenHeight / 2 - height / 2; // center the zeppelin vertically
 
-        zeppelinHitBox = new Rectangle(zeppelin.x + paddingX, zeppelin.y + paddingY, zeppelin.width - 2 * paddingX, zeppelin.height - 2 * paddingY);
+        zeppelinHitBox = new Rectangle(zeppelin.x, zeppelin.y, zeppelin.width - paddingX, zeppelin.height - paddingY);
 
         planes = new Array<>();
         spawnPlane();
@@ -182,7 +182,7 @@ public class GameScreen implements Screen {
 
 
         // Move the mountain across the screen
-        mountain.x -= (backgroundVelocity * 2); // Move the mountain faster than the sky
+        mountain.x -= (backgroundVelocity * 2.3); // Move the mountain faster than the sky
 
         // Check if the mountain has moved off the screen
      /*   if (mountain.x + mountain.width < 0) {
