@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -46,8 +47,6 @@ public class GameScreen implements Screen {
     private float backgroundY = 0;
     int screenWidth = GameConfig.SCREEN_WIDTH;
     int screenHeight = GameConfig.SCREEN_HEIGHT;
-   // int screenWidth = 800;
-    //int screenHeight = 480;
     int paddingX = 10;
     int paddingY = 15;
     private static final float zeppelinImageWidth = 1567;
@@ -124,16 +123,6 @@ public class GameScreen implements Screen {
             spawnCluster();
         }
 
-
-     /*   float x = screenWidth;
-        float y = random((screenHeight/4), screenHeight - (screenHeight/4)); // ensures planes enter screen at least 1/4 screen-height from top and bottom
-        int yAngle = random.nextInt(120) - 60;
-
-        Plane plane = new Plane();
-        planeFlyingSound.play();
-        planes.add(plane);
-        lastPlaneTime = TimeUtils.millis() + 4000; // sets the delay time to 4 seconds*/
-
     }
     private void spawnCluster() {
         // Create additional planes within a short time frame
@@ -150,6 +139,7 @@ public class GameScreen implements Screen {
         // blue and alpha component in the range [0,1]
         // of the color to be used to clear the screen.
         ScreenUtils.clear(0, 0, 0.2f, 1);
+
 
         // tell the camera to update its matrices.
         camera.update();
@@ -169,10 +159,9 @@ public class GameScreen implements Screen {
 
         // Set the font size
         game.font.getData().setScale(2f);
-        // draw the Drops Collected score
-        game.font.draw(game.batch, "Planes hit: " + planesHit, 5, 475);
-        // shows backgroundX
-       // game.font.draw(game.batch, "backgroundX: " + backgroundX, 5, 450);
+
+        game.font.draw(game.batch, "Planes hit: " + planesHit, 15, 40);
+
 
         // draw the bucket and all drops
         game.batch.draw(zeppelinImage, zeppelin.x, zeppelin.y, zeppelin.width, zeppelin.height);
@@ -184,11 +173,6 @@ public class GameScreen implements Screen {
         // Move the mountain across the screen
         mountain.x -= (backgroundVelocity * 2.3); // Move the mountain faster than the sky
 
-        // Check if the mountain has moved off the screen
-     /*   if (mountain.x + mountain.width < 0) {
-            // Respawn the mountain at the right edge of the screen
-            mountain.x = screenWidth;
-        }*/
 
         game.batch.end();
 
@@ -245,15 +229,9 @@ public class GameScreen implements Screen {
             // Get the random y-axis angle for this plane
             int yAngle = yAngles[index];
 
-            // Calculate the random y-axis angle
-            //int yAngle = random.nextInt(120) - 60;// Random angle between -60 and 60 degrees
-
-            // Calculate the y-axis movement based on the angle
-            //float yMovement = 30 * MathUtils.sinDeg(yAngle) * Gdx.graphics.getDeltaTime();
             float yMovement = 30 * MathUtils.sinDeg(yAngle);
 
             plane.x -= 250 * Gdx.graphics.getDeltaTime();
-            //plane.y -= yAngle * Gdx.graphics.getDeltaTime();
             plane.y -= yMovement * Gdx.graphics.getDeltaTime();
 
             if (plane.y + 44 < 0)

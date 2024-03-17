@@ -14,7 +14,6 @@ public class MainMenuScreen implements Screen {
 
     Texture backgroundImage;
     Music valkyriesMusic;
-
     OrthographicCamera camera;
     int screenWidth = GameConfig.SCREEN_WIDTH;
     int screenHeight = GameConfig.SCREEN_HEIGHT;
@@ -24,10 +23,11 @@ public class MainMenuScreen implements Screen {
     public MainMenuScreen(final Plane game) {
         this.game = game;
 
+        backgroundImage = new Texture(Gdx.files.internal("main-menu-background.png"));
+        valkyriesMusic = Gdx.audio.newMusic(Gdx.files.internal("valkyries.mp3"));
+
         camera = new OrthographicCamera();
         camera.setToOrtho(false, screenWidth, screenHeight);
-        backgroundImage = new Texture(Gdx.files.internal("main-menu-background.jpg"));
-        valkyriesMusic = Gdx.audio.newMusic(Gdx.files.internal("valkyries.mp3"));
 
     }
 
