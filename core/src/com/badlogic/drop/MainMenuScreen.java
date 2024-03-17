@@ -6,12 +6,15 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.audio.Music;
 
 public class MainMenuScreen implements Screen {
 
     final Plane game;
 
     Texture backgroundImage;
+    Music valkyriesMusic;
+
     OrthographicCamera camera;
     int screenWidth = GameConfig.SCREEN_WIDTH;
     int screenHeight = GameConfig.SCREEN_HEIGHT;
@@ -24,12 +27,13 @@ public class MainMenuScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, screenWidth, screenHeight);
         backgroundImage = new Texture(Gdx.files.internal("main-menu-background.jpg"));
+        valkyriesMusic = Gdx.audio.newMusic(Gdx.files.internal("valkyries.mp3"));
 
     }
 
     @Override
     public void show() {
-
+        valkyriesMusic.play();
     }
 
      @Override
@@ -83,6 +87,7 @@ public class MainMenuScreen implements Screen {
     @Override
     public void dispose() {
     backgroundImage.dispose();
+        valkyriesMusic.dispose();
     }
 
 }
